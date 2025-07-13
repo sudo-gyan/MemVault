@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from django.shortcuts import get_object_or_404
 from .models import APIKey
-from .serializers import APIKeySerializer, APIKeyFullSerializer, KeyRegenerationSerializer
+from .serializers import APIKeyFullSerializer, KeyRegenerationSerializer
 
 
 @api_view(['GET'])
@@ -20,7 +20,7 @@ def get_api_keys(request):
     """
     try:
         api_key = APIKey.objects.get(user=request.user)
-        serializer = APIKeySerializer(api_key)
+        serializer = APIKeyFullSerializer(api_key)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except APIKey.DoesNotExist:
         return Response(

@@ -1,4 +1,5 @@
 import secrets
+import uuid
 from django.db import models
 from django.conf import settings
 
@@ -54,7 +55,7 @@ class APIKey(models.Model):
     @classmethod
     def generate_key(cls):
         """Generate a secure API key."""
-        return "MEM0_" + secrets.token_urlsafe(48)
+        return "MEM0_" + uuid.uuid4().hex.upper()[:60]
     
     def __str__(self):
         return f"API Keys for {self.user.username}"
