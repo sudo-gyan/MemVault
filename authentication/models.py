@@ -21,9 +21,6 @@ class APIKey(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        db_table = 'auth_apikey'
-        verbose_name = 'API Key'
-        verbose_name_plural = 'API Keys'
         indexes = [
             models.Index(fields=['primary_key']),
             models.Index(fields=['secondary_key']),

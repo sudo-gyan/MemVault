@@ -31,38 +31,6 @@ def get_api_keys(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def generate_api_keys(request):
-    """
-    Generate new API keys for the current user.
-    
-    Creates a new APIKey object if one doesn't exist, or regenerates both keys if it does.
-    
-    Returns:
-        - 201: New API keys created
-        - 200: Existing API keys regenerated
-    """
-    api_key, created = APIKey.objects.get_or_create(user=request.user)
-    
-    if not created:
-        # If APIKey already exists, regenerate both keys
-        api_key.primary_key = APIKey.generate_key()
-        api_key.secondary_key = APIKey.generate_key()
-        api_key.save(update_fields=['primary_key', 'secondary_key', 'updated_at'])
-        message = "API keys regenerated successfully"
-        status_code = status.HTTP_200_OK
-    else:
-        message = "API keys generated successfully"
-        status_code = status.HTTP_201_CREATED
-    
-    serializer = APIKeyFullSerializer(api_key)
-    response_data = serializer.data
-    response_data['message'] = message
-    
-    return Response(response_data, status=status_code)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def regenerate_primary_key(request):
     """
     Regenerate only the primary API key for the current user.

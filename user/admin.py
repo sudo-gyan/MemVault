@@ -32,6 +32,24 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'created_at')
     search_fields = ('username', 'first_name', 'last_name')
     ordering = ('-created_at',)
+        
+    # Fieldsets for the change user form
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('User info', {'fields': ('first_name', 'last_name',)}),
+        ('Permissions', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        ('Timestamp', {'fields': ('last_login', 'created_at')}),
+    )
+    
+    # Fields for the add user form
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'first_name', 'last_name', 'password1', 'password2'),
+        }),
+    )
     
 
     # Make created_at read-only since it's auto-generated
