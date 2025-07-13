@@ -1,0 +1,9 @@
+Django
+djangorestframework
+redis
+celery
+mem0ai
+gunicorn
+python-dotenv
+psycopg2-binary
+gunicorn
