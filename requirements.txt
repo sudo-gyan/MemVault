@@ -1,5 +1,6 @@
 Django
 djangorestframework
+django-filter
 redis
 celery
 mem0ai

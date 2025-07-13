@@ -11,9 +11,7 @@ class APIKeyAuthentication(BaseAuthentication):
     """
     Custom authentication class for API key based authentication.
     
-    This authentication class checks for API keys in custom headers:
-    - API-Key: <key>
-    - X-API-Key: <key>
+    This authentication class checks for API keys in X-API-Key
     """
     
     def authenticate(self, request):
@@ -26,7 +24,7 @@ class APIKeyAuthentication(BaseAuthentication):
         """
         api_key = request.META.get('HTTP_X_API_KEY')
         
-        # If no API key found in either header, return None
+        # If no API key found in header, return None
         if not api_key:
             return None
         
