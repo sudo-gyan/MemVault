@@ -91,6 +91,9 @@ def mem0_update_task(self, memory_type, pk, mem0_id, content):
     Update an existing memory in mem0 and update the status.
     """
     try:
+        # Validate mem0_id
+        if not mem0_id:
+            self.mem0_add_task(memory_type, pk, content)
         # Get the appropriate model class
         model_class = get_model_class(memory_type)
 
