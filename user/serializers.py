@@ -81,15 +81,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     admin_username = serializers.CharField(source="admin.username", read_only=True)
     team_count = serializers.SerializerMethodField()
-    parent_org_name = serializers.CharField(source="parent_org.name", read_only=True)
-
     class Meta:
         model = Organization
         fields = [
             "id",
             "name",
-            "parent_org",
-            "parent_org_name",
             "admin",
             "admin_username",
             "team_count",
