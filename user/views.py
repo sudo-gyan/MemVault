@@ -39,6 +39,20 @@ class UserOrganizationsListView(generics.ListAPIView):
         return Organization.get_orgs_administered_by_user(self.request.user)
 
 
+class OrganizationCreateView(generics.CreateAPIView):
+    """
+    Create a new organization.
+    """
+
+    serializer_class = OrganizationSerializer
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        """Create an organization with the authenticated user as admin."""
+        serializer.save(admin=self.request.user)
+
+
 class TeamListCreateView(generics.ListCreateAPIView, IsOrgAdminMixin):
     """
     List teams in an organization or create a new team.

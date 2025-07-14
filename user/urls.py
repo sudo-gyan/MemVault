@@ -10,6 +10,11 @@ urlpatterns = [
         views.UserOrganizationsListView.as_view(),
         name="user_organizations",
     ),
+    path(
+        "organizations/create/",
+        views.OrganizationCreateView.as_view(),
+        name="organization_create",
+    ),
     # Team management endpoints
     path(
         "organizations/<int:org_id>/teams/",

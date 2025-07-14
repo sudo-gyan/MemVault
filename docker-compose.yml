@@ -62,21 +62,5 @@ services:
         condition: service_healthy
     command: celery -A memvault worker --loglevel=info --concurrency=2
 
-  # Celery Beat (for scheduled tasks)
-  celery-beat:
-    build: .
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DATABASE_URL: postgresql://${POSTGRES_USER:-memvault_user}:${POSTGRES_PASSWORD:-memvault_password}@db:5432/${POSTGRES_DB:-memvault}
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: celery -A memvault beat --loglevel=info
-
 volumes:
   postgres_data:

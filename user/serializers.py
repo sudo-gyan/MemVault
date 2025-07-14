@@ -95,6 +95,12 @@ class OrganizationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "admin", "created_at", "updated_at"]
 
+    def validate_name(self, value):
+        """Validate organization name."""
+        if not value.strip():
+            raise serializers.ValidationError("Organization name cannot be empty.")
+        return value.strip()
+
     def get_team_count(self, obj):
         """Get the number of teams in the organization."""
         return obj.teams.count()
