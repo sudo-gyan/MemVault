@@ -20,7 +20,14 @@ class UserMemorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "mem0_memory_id", "status", "error_message"]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "mem0_memory_id",
+            "status",
+            "error_message",
+        ]
 
     def create(self, validated_data):
         """Set user to current user."""
@@ -45,7 +52,14 @@ class TeamMemorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "mem0_memory_id", "status", "error_message"]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "mem0_memory_id",
+            "status",
+            "error_message",
+        ]
 
     def create(self, validated_data):
         """Create team memory."""
@@ -69,7 +83,14 @@ class OrganizationMemorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "mem0_memory_id", "status", "error_message"]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "mem0_memory_id",
+            "status",
+            "error_message",
+        ]
 
     def create(self, validated_data):
         """Create organization memory."""

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User
+from .models import User, Organization, Team, TeamMembership
 
 
 class UserCreationForm(UserCreationForm):
@@ -87,3 +87,72 @@ class UserAdmin(BaseUserAdmin):
 
     # Make created_at read-only since it's auto-generated
     readonly_fields = ("created_at",)
+
+
+class TeamMembershipInline(admin.TabularInline):
+    """Inline admin for team memberships."""
+
+    model = TeamMembership
+    extra = 0
+    readonly_fields = ("joined_at",)
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    """Admin interface for Organization model."""
+
+    list_display = ("name", "admin", "created_at", "updated_at")
+    list_filter = ("created_at", "updated_at")
+    search_fields = ("name",)
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at", "updated_at")
+
+    fieldsets = (
+        (None, {"fields": ("name", "admin")}),
+        ("Timestamps", {"fields": ("created_at", "updated_at")}),
+    )
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    """Admin interface for Team model."""
+
+    list_display = (
+        "name",
+        "organization",
+        "get_member_count",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("organization", "created_at", "updated_at")
+    search_fields = ("name", "organization__name")
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at", "updated_at")
+    inlines = [TeamMembershipInline]
+
+    fieldsets = (
+        (None, {"fields": ("name", "description", "organization")}),
+        ("Timestamps", {"fields": ("created_at", "updated_at")}),
+    )
+
+    def get_member_count(self, obj):
+        """Get the number of members in the team."""
+        return obj.members.count()
+
+    get_member_count.short_description = "Member Count"
+
+
+@admin.register(TeamMembership)
+class TeamMembershipAdmin(admin.ModelAdmin):
+    """Admin interface for TeamMembership model."""
+
+    list_display = ("user", "team", "joined_at")
+    list_filter = ("team__organization", "joined_at")
+    search_fields = ("user__username", "team__name")
+    ordering = ("-joined_at",)
+    readonly_fields = ("joined_at",)
+
+    fieldsets = (
+        (None, {"fields": ("user", "team")}),
+        ("Timestamps", {"fields": ("joined_at",)}),
+    )

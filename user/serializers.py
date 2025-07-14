@@ -81,6 +81,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     admin_username = serializers.CharField(source="admin.username", read_only=True)
     team_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Organization
         fields = [
