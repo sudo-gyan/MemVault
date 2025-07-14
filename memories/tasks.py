@@ -1,25 +1,25 @@
 import logging
 from celery import shared_task
-from mem0 import AsyncMemoryClient
+from mem0 import MemoryClient
 from django.apps import apps
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# Shared AsyncMemory instance per worker process
+# Shared Memory instance per worker process
 _mem0_instance = None
 
 
 def get_mem0_instance():
-    """Get or create a shared AsyncMemory instance for the current worker."""
+    """Get or create a shared MemoryClient instance for the current worker."""
     global _mem0_instance
     if _mem0_instance is None:
         if not settings.MEM0_API_KEY:
             raise ValueError(
-                "MEM0_API_KEY must be set in settings to create AsyncMemory instance"
+                "MEM0_API_KEY must be set in settings to create MemoryClient instance"
             )
-        _mem0_instance = AsyncMemoryClient(api_key=settings.MEM0_API_KEY)
-        logger.info("Created new AsyncMemory instance for worker")
+        _mem0_instance = MemoryClient(api_key=settings.MEM0_API_KEY)
+        logger.info("Created new MemoryClient instance for worker")
     return _mem0_instance
 
 
@@ -102,8 +102,8 @@ def mem0_update_task(self, memory_type, pk, mem0_id, content):
         instance.mark_as_processing()
 
         # Update memory in mem0
-        m = get_mem0_instance()
-        result = m.update(memory_id=mem0_id, data=content)
+        client = get_mem0_instance()
+        client.update(memory_id=mem0_id, data=content)
 
         # Mark as completed
         instance.mark_as_completed()
@@ -136,8 +136,8 @@ def mem0_delete_task(self, memory_type, pk, mem0_id):
     """
     try:
         # Delete memory from mem0
-        m = get_mem0_instance()
-        m.delete(memory_id=mem0_id)
+        client = get_mem0_instance()
+        client.delete(memory_id=mem0_id)
 
         logger.info(
             f"Successfully deleted mem0 memory for {memory_type} {pk}: {mem0_id}"
