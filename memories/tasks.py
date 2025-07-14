@@ -102,7 +102,7 @@ def mem0_update_task(self, memory_type, pk, mem0_id, content):
 
         # Update memory in mem0
         client = get_mem0_instance()
-        client.update(memory_id=mem0_id, data=content)
+        client.update(memory_id=mem0_id, text=content)
 
         # Mark as completed
         instance.mark_as_completed(mem0_memory_id=mem0_id)
