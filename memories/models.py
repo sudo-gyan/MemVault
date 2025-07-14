@@ -54,7 +54,9 @@ class BaseMemory(models.Model):
         self.error_message = ""
         if mem0_memory_id:
             self.mem0_memory_id = mem0_memory_id
-        self.save(update_fields=["status", "mem0_memory_id", "error_message", "updated_at"])
+        self.save(
+            update_fields=["status", "mem0_memory_id", "error_message", "updated_at"]
+        )
         delattr(self, "_skip_signals")
 
     def mark_as_failed(self, error_message=""):

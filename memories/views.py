@@ -124,7 +124,7 @@ class TeamMemoryDetailView(BaseMemoryViewSet, generics.RetrieveUpdateDestroyAPIV
     def get_queryset(self):
         """Return memories for the specified team if user has access."""
         team_id = self.kwargs.get("team_id")
-        return  TeamMemory.objects.filter(team_id=team_id)
+        return TeamMemory.objects.filter(team_id=team_id)
 
 
 # Organization Memory Views
