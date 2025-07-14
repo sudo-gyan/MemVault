@@ -32,6 +32,7 @@ ALLOWED_HOSTS = (
     os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
 )
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Application definition
 
