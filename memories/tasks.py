@@ -14,7 +14,7 @@ def get_mem0_instance():
     """Get or create a shared AsyncMemory instance for the current worker."""
     global _mem0_instance
     if _mem0_instance is None:
-        if settings.MEM0_API_KEY:
+        if not settings.MEM0_API_KEY:
             raise ValueError(
                 "MEM0_API_KEY must be set in settings to create AsyncMemory instance"
             )
