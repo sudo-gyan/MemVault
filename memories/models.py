@@ -42,22 +42,33 @@ class BaseMemory(models.Model):
             models.Index(fields=['content'], name='%(class)s_content_search'),
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Track original content for change detection
+        self._original_content = self.content
+
     def mark_as_processing(self):
         """Mark memory as being processed."""
+        self._skip_signals = True
         self.status = 'processing'
         self.save(update_fields=['status', 'updated_at'])
+        delattr(self, '_skip_signals')
 
     def mark_as_completed(self):
         """Mark memory as successfully processed."""
+        self._skip_signals = True
         self.status = 'completed'
         self.error_message = ''
         self.save(update_fields=['status', 'error_message', 'updated_at'])
+        delattr(self, '_skip_signals')
 
     def mark_as_failed(self, error_message=''):
         """Mark memory as failed with optional error message."""
+        self._skip_signals = True
         self.status = 'failed'
         self.error_message = error_message
         self.save(update_fields=['status', 'error_message', 'updated_at'])
+        delattr(self, '_skip_signals')
 
 
 class UserMemory(BaseMemory):
