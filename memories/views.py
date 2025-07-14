@@ -28,16 +28,10 @@ class BaseMemoryViewSet:
     
     def apply_filters(self, queryset):
         """Apply common filters to queryset."""
-        # Filter by processing status
+        # Filter by status
         status_filter = self.request.query_params.get('status')
         if status_filter:
-            queryset = queryset.filter(processing_status=status_filter)
-        
-        # Filter by is_processed
-        processed_filter = self.request.query_params.get('is_processed')
-        if processed_filter is not None:
-            is_processed = processed_filter.lower() == 'true'
-            queryset = queryset.filter(is_processed=is_processed)
+            queryset = queryset.filter(status=status_filter)
         
         # Search in content
         search = self.request.query_params.get('search')
@@ -57,7 +51,7 @@ class UserMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPIView):
     serializer_class = UserMemorySerializer
     permission_classes = [IsAuthenticated, UserMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['processing_status', 'is_processed']
+    filterset_fields = ['status']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']
     
@@ -91,7 +85,7 @@ class TeamMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPIView):
     serializer_class = TeamMemorySerializer
     permission_classes = [IsAuthenticated, TeamMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['processing_status', 'is_processed']
+    filterset_fields = ['status']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']
     
@@ -157,7 +151,7 @@ class OrganizationMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPI
     serializer_class = OrganizationMemorySerializer
     permission_classes = [IsAuthenticated, OrganizationMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['processing_status', 'is_processed']
+    filterset_fields = ['status']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']
     

@@ -12,8 +12,8 @@ class UserMemorySerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMemory
         fields = [
-            'id', 'content', 'mem0_memory_id', 'is_processed', 
-            'processing_status', 'error_message', 
+            'id', 'content', 'mem0_memory_id', 
+            'status', 'error_message', 
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
@@ -32,8 +32,8 @@ class TeamMemorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamMemory
         fields = [
-            'id', 'team', 'content', 'mem0_memory_id', 'is_processed', 
-            'processing_status', 'error_message', 
+            'id', 'team', 'content', 'mem0_memory_id', 
+            'status', 'error_message', 
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'team', 'created_at', 'updated_at']
@@ -51,8 +51,8 @@ class OrganizationMemorySerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationMemory
         fields = [
-            'id', 'organization', 'content', 'mem0_memory_id', 'is_processed', 
-            'processing_status', 'error_message', 
+            'id', 'organization', 'content', 'mem0_memory_id', 
+            'status', 'error_message', 
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'organization', 'created_at', 'updated_at']

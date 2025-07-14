@@ -123,7 +123,7 @@ class MemoryAPITest(APITestCase):
         UserMemory.objects.create(
             user=self.user1,
             content='Completed memory',
-            processing_status='completed'
+            status='completed'
         )
         
         response = self.client.get('/api/memories/users/me/?status=completed')

@@ -24,9 +24,8 @@ class BaseMemory(models.Model):
         help_text="ID from mem0 ai"
     )
     
-    # Status and processing
-    is_processed = models.BooleanField(default=False)
-    processing_status = models.CharField(
+    # Status and error handling
+    status = models.CharField(
         max_length=50, 
         choices=STATUS_CHOICES,
         default='pending'
@@ -45,22 +44,20 @@ class BaseMemory(models.Model):
 
     def mark_as_processing(self):
         """Mark memory as being processed."""
-        self.processing_status = 'processing'
-        self.save(update_fields=['processing_status', 'updated_at'])
+        self.status = 'processing'
+        self.save(update_fields=['status', 'updated_at'])
 
     def mark_as_completed(self):
         """Mark memory as successfully processed."""
-        self.processing_status = 'completed'
-        self.is_processed = True
+        self.status = 'completed'
         self.error_message = ''
-        self.save(update_fields=['processing_status', 'is_processed', 'error_message', 'updated_at'])
+        self.save(update_fields=['status', 'error_message', 'updated_at'])
 
     def mark_as_failed(self, error_message=''):
         """Mark memory as failed with optional error message."""
-        self.processing_status = 'failed'
-        self.is_processed = False
+        self.status = 'failed'
         self.error_message = error_message
-        self.save(update_fields=['processing_status', 'is_processed', 'error_message', 'updated_at'])
+        self.save(update_fields=['status', 'error_message', 'updated_at'])
 
 
 class UserMemory(BaseMemory):
@@ -75,7 +72,7 @@ class UserMemory(BaseMemory):
     class Meta:
         indexes = [
             models.Index(fields=['user', '-created_at']),
-            models.Index(fields=['user', 'processing_status']),
+            models.Index(fields=['user', 'status']),
         ]
 
     def __str__(self):
@@ -102,7 +99,7 @@ class TeamMemory(BaseMemory):
     class Meta:
         indexes = [
             models.Index(fields=['team', '-created_at']),
-            models.Index(fields=['team', 'processing_status']),
+            models.Index(fields=['team', 'status']),
         ]
 
     def __str__(self):
@@ -129,7 +126,7 @@ class OrganizationMemory(BaseMemory):
     class Meta:
         indexes = [
             models.Index(fields=['organization', '-created_at']),
-            models.Index(fields=['organization', 'processing_status']),
+            models.Index(fields=['organization', 'status']),
         ]
 
     def __str__(self):
