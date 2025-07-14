@@ -6,4 +6,7 @@ celery[redis]
 mem0ai
 gunicorn
 psycopg2-binary
-dj_database_url
+dj-database-url
+django-celery-beat
+flower
+whitenoise

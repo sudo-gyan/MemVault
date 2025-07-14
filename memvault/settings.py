@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-b=p)jk3&s%rx7oqgxzs9j=n98g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes', 'on')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -84,6 +84,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if os.getenv('POSTGRES_DATABASE_URL'):
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config(default=os.getenv('POSTGRES_DATABASE_URL'))
 
 
 # Password validation
