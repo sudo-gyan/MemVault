@@ -1,6 +1,6 @@
 import logging
 from celery import shared_task
-from mem0 import AsyncMemory
+from mem0 import AsyncMemoryClient
 from django.apps import apps
 from django.conf import settings
 
@@ -18,7 +18,7 @@ def get_mem0_instance():
             raise ValueError(
                 "MEM0_API_KEY must be set in settings to create AsyncMemory instance"
             )
-        _mem0_instance = AsyncMemory(api_key=settings.MEM0_API_KEY)
+        _mem0_instance = AsyncMemoryClient(api_key=settings.MEM0_API_KEY)
         logger.info("Created new AsyncMemory instance for worker")
     return _mem0_instance
 
