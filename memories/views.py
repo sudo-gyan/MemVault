@@ -5,6 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
+from authentication.authentication import APIKeyAuthentication
+
 from .models import UserMemory, TeamMemory, OrganizationMemory
 from .serializers import (
     UserMemorySerializer,
@@ -50,7 +52,8 @@ class UserMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPIView):
     """
 
     serializer_class = UserMemorySerializer
-    permission_classes = [IsAuthenticated, UserMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [UserMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["status"]
     ordering_fields = ["created_at", "updated_at"]
@@ -69,7 +72,8 @@ class UserMemoryDetailView(BaseMemoryViewSet, generics.RetrieveUpdateDestroyAPIV
     """
 
     serializer_class = UserMemorySerializer
-    permission_classes = [IsAuthenticated, UserMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [UserMemoryPermission]
     lookup_url_kwarg = "memory_id"
 
     def get_queryset(self):
@@ -86,7 +90,8 @@ class TeamMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPIView):
     """
 
     serializer_class = TeamMemorySerializer
-    permission_classes = [IsAuthenticated, TeamMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [TeamMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["status"]
     ordering_fields = ["created_at", "updated_at"]
@@ -95,19 +100,7 @@ class TeamMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPIView):
     def get_queryset(self):
         """Return memories for the specified team if user has access."""
         team_id = self.kwargs.get("team_id")
-        team = get_object_or_404(Team, id=team_id)
-
-        # Check if user has access to this team
-        user = self.request.user
-        has_access = (
-            TeamMembership.objects.filter(user=user, team=team).exists()
-            or team.organization.admin == user
-        )
-
-        if not has_access:
-            return TeamMemory.objects.none()
-
-        queryset = TeamMemory.objects.filter(team=team)
+        queryset = TeamMemory.objects.filter(team_id=team_id)
         return self.apply_filters(queryset)
 
     def perform_create(self, serializer):
@@ -124,25 +117,14 @@ class TeamMemoryDetailView(BaseMemoryViewSet, generics.RetrieveUpdateDestroyAPIV
     """
 
     serializer_class = TeamMemorySerializer
-    permission_classes = [IsAuthenticated, TeamMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [TeamMemoryPermission]
     lookup_url_kwarg = "memory_id"
 
     def get_queryset(self):
         """Return memories for the specified team if user has access."""
         team_id = self.kwargs.get("team_id")
-        team = get_object_or_404(Team, id=team_id)
-
-        # Check if user has access to this team
-        user = self.request.user
-        has_access = (
-            TeamMembership.objects.filter(user=user, team=team).exists()
-            or team.organization.admin == user
-        )
-
-        if not has_access:
-            return TeamMemory.objects.none()
-
-        return TeamMemory.objects.filter(team=team)
+        return  TeamMemory.objects.filter(team_id=team_id)
 
 
 # Organization Memory Views
@@ -154,7 +136,8 @@ class OrganizationMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPI
     """
 
     serializer_class = OrganizationMemorySerializer
-    permission_classes = [IsAuthenticated, OrganizationMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [OrganizationMemoryPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["status"]
     ordering_fields = ["created_at", "updated_at"]
@@ -163,21 +146,7 @@ class OrganizationMemoryListCreateView(BaseMemoryViewSet, generics.ListCreateAPI
     def get_queryset(self):
         """Return memories for the specified organization if user has access."""
         org_id = self.kwargs.get("org_id")
-        organization = get_object_or_404(Organization, id=org_id)
-
-        # Check if user has access to this organization
-        user = self.request.user
-        has_access = (
-            organization.admin == user
-            or TeamMembership.objects.filter(
-                user=user, team__organization=organization
-            ).exists()
-        )
-
-        if not has_access:
-            return OrganizationMemory.objects.none()
-
-        queryset = OrganizationMemory.objects.filter(organization=organization)
+        queryset = OrganizationMemory.objects.filter(organization_id=org_id)
         return self.apply_filters(queryset)
 
     def perform_create(self, serializer):
@@ -196,24 +165,11 @@ class OrganizationMemoryDetailView(
     """
 
     serializer_class = OrganizationMemorySerializer
-    permission_classes = [IsAuthenticated, OrganizationMemoryPermission]
+    authentication_classes = [APIKeyAuthentication]
+    permission_classes = [OrganizationMemoryPermission]
     lookup_url_kwarg = "memory_id"
 
     def get_queryset(self):
         """Return memories for the specified organization if user has access."""
         org_id = self.kwargs.get("org_id")
-        organization = get_object_or_404(Organization, id=org_id)
-
-        # Check if user has access to this organization
-        user = self.request.user
-        has_access = (
-            organization.admin == user
-            or TeamMembership.objects.filter(
-                user=user, team__organization=organization
-            ).exists()
-        )
-
-        if not has_access:
-            return OrganizationMemory.objects.none()
-
-        return OrganizationMemory.objects.filter(organization=organization)
+        return OrganizationMemory.objects.filter(organization_id=org_id)

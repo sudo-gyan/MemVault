@@ -47,12 +47,14 @@ class BaseMemory(models.Model):
         self.save(update_fields=["status", "updated_at"])
         delattr(self, "_skip_signals")
 
-    def mark_as_completed(self):
+    def mark_as_completed(self, mem0_memory_id=None):
         """Mark memory as successfully processed."""
         self._skip_signals = True
         self.status = "completed"
         self.error_message = ""
-        self.save(update_fields=["status", "error_message", "updated_at"])
+        if mem0_memory_id:
+            self.mem0_memory_id = mem0_memory_id
+        self.save(update_fields=["status", "mem0_memory_id", "error_message", "updated_at"])
         delattr(self, "_skip_signals")
 
     def mark_as_failed(self, error_message=""):

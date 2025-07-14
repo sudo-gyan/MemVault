@@ -54,6 +54,7 @@ class TeamMemorySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "team",
             "created_at",
             "updated_at",
             "mem0_memory_id",
@@ -85,6 +86,7 @@ class OrganizationMemorySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "organization",
             "created_at",
             "updated_at",
             "mem0_memory_id",

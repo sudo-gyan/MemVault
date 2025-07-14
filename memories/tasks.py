@@ -59,8 +59,7 @@ def mem0_add_task(self, memory_type, pk, content):
             mem0_id = result["results"][0]["id"]
 
             # Update the instance with mem0_memory_id and mark as completed
-            instance.mem0_memory_id = mem0_id
-            instance.mark_as_completed()
+            instance.mark_as_completed(mem0_memory_id=mem0_id)
 
             logger.info(
                 f"Successfully created mem0 memory for {memory_type} {pk}: {mem0_id}"
@@ -93,7 +92,7 @@ def mem0_update_task(self, memory_type, pk, mem0_id, content):
     try:
         # Validate mem0_id
         if not mem0_id:
-            self.mem0_add_task(memory_type, pk, content)
+            return self.mem0_add_task(memory_type, pk, content)
         # Get the appropriate model class
         model_class = get_model_class(memory_type)
 
@@ -106,7 +105,7 @@ def mem0_update_task(self, memory_type, pk, mem0_id, content):
         client.update(memory_id=mem0_id, data=content)
 
         # Mark as completed
-        instance.mark_as_completed()
+        instance.mark_as_completed(mem0_memory_id=mem0_id)
 
         logger.info(
             f"Successfully updated mem0 memory for {memory_type} {pk}: {mem0_id}"
