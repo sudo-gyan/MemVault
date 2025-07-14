@@ -8,7 +8,7 @@ from .models import APIKey
 def create_api_key_for_user(sender, instance, created, **kwargs):
     """
     Signal to automatically create API keys when a new user is created.
-    
+
     Args:
         sender: The User model class
         instance: The actual user instance that was saved

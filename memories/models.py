@@ -5,41 +5,34 @@ from user.models import User, Team, Organization
 
 class BaseMemory(models.Model):
     """Base memory model with common fields and functionality."""
-    
+
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('processing', 'Processing'),
-        ('completed', 'Completed'),
-        ('failed', 'Failed'),
+        ("pending", "Pending"),
+        ("processing", "Processing"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
     ]
-    
+
     id = models.BigAutoField(primary_key=True)
-    
+
     # Memory content
     content = models.TextField(help_text="The actual memory content")
     mem0_memory_id = models.CharField(
-        max_length=255, 
-        null=True, 
-        blank=True,
-        help_text="ID from mem0 ai"
+        max_length=255, null=True, blank=True, help_text="ID from mem0 ai"
     )
-    
+
     # Status and error handling
-    status = models.CharField(
-        max_length=50, 
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="pending")
     error_message = models.TextField(blank=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
         indexes = [
-            models.Index(fields=['-created_at']),
-            models.Index(fields=['content'], name='%(class)s_content_search'),
+            models.Index(fields=["-created_at"]),
+            models.Index(fields=["content"], name="%(class)s_content_search"),
         ]
 
     def __init__(self, *args, **kwargs):
@@ -50,40 +43,36 @@ class BaseMemory(models.Model):
     def mark_as_processing(self):
         """Mark memory as being processed."""
         self._skip_signals = True
-        self.status = 'processing'
-        self.save(update_fields=['status', 'updated_at'])
-        delattr(self, '_skip_signals')
+        self.status = "processing"
+        self.save(update_fields=["status", "updated_at"])
+        delattr(self, "_skip_signals")
 
     def mark_as_completed(self):
         """Mark memory as successfully processed."""
         self._skip_signals = True
-        self.status = 'completed'
-        self.error_message = ''
-        self.save(update_fields=['status', 'error_message', 'updated_at'])
-        delattr(self, '_skip_signals')
+        self.status = "completed"
+        self.error_message = ""
+        self.save(update_fields=["status", "error_message", "updated_at"])
+        delattr(self, "_skip_signals")
 
-    def mark_as_failed(self, error_message=''):
+    def mark_as_failed(self, error_message=""):
         """Mark memory as failed with optional error message."""
         self._skip_signals = True
-        self.status = 'failed'
+        self.status = "failed"
         self.error_message = error_message
-        self.save(update_fields=['status', 'error_message', 'updated_at'])
-        delattr(self, '_skip_signals')
+        self.save(update_fields=["status", "error_message", "updated_at"])
+        delattr(self, "_skip_signals")
 
 
 class UserMemory(BaseMemory):
     """Memory specific to a user."""
-    
-    user = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE,
-        related_name='memories'
-    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="memories")
 
     class Meta:
         indexes = [
-            models.Index(fields=['user', '-created_at']),
-            models.Index(fields=['user', 'status']),
+            models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["user", "status"]),
         ]
 
     def __str__(self):
@@ -91,7 +80,7 @@ class UserMemory(BaseMemory):
 
     @property
     def scope(self):
-        return 'user'
+        return "user"
 
     @property
     def owner(self):
@@ -100,17 +89,13 @@ class UserMemory(BaseMemory):
 
 class TeamMemory(BaseMemory):
     """Memory specific to a team."""
-    
-    team = models.ForeignKey(
-        Team, 
-        on_delete=models.CASCADE,
-        related_name='memories'
-    )
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="memories")
 
     class Meta:
         indexes = [
-            models.Index(fields=['team', '-created_at']),
-            models.Index(fields=['team', 'status']),
+            models.Index(fields=["team", "-created_at"]),
+            models.Index(fields=["team", "status"]),
         ]
 
     def __str__(self):
@@ -118,7 +103,7 @@ class TeamMemory(BaseMemory):
 
     @property
     def scope(self):
-        return 'team'
+        return "team"
 
     @property
     def owner(self):
@@ -127,17 +112,15 @@ class TeamMemory(BaseMemory):
 
 class OrganizationMemory(BaseMemory):
     """Memory specific to an organization."""
-    
+
     organization = models.ForeignKey(
-        Organization, 
-        on_delete=models.CASCADE,
-        related_name='memories'
+        Organization, on_delete=models.CASCADE, related_name="memories"
     )
 
     class Meta:
         indexes = [
-            models.Index(fields=['organization', '-created_at']),
-            models.Index(fields=['organization', 'status']),
+            models.Index(fields=["organization", "-created_at"]),
+            models.Index(fields=["organization", "status"]),
         ]
 
     def __str__(self):
@@ -145,7 +128,7 @@ class OrganizationMemory(BaseMemory):
 
     @property
     def scope(self):
-        return 'organization'
+        return "organization"
 
     @property
     def owner(self):
