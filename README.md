@@ -51,13 +51,31 @@ MemVault is a powerful Django-based API that provides hierarchical memory manage
 
 3. **Build and start services:**
    ```bash
-   docker-compose up -d --build
+   docker compose up -d --build
    ```
 
-4. **Run initial setup:**
+4. **Setup users:**
+
+   Open Django Shell to Create User:
    ```bash
-   docker-compose exec web python manage.py migrate
-   docker-compose exec web python manage.py createsuperuser
+   docker exec -it memvault-web-1 bash
+   python manage.py shell
+   ```
+   
+   Run in Django Shell:
+   ```python
+   from user.models import User
+   
+   admin = User.objects.create_superuser(username='admin', password='admin123')
+   USERS = {
+       'alice':  'alice123',
+       'bob': 'bob123',
+       'charlie':'charlie123',
+       'dana': 'dana123',  # Org A admin
+       'eve': 'eve123',  # Org B admin
+   }
+   for username, password in USERS.items():
+       USERS[username]=User.objects.create_user(username=username, password=password)
    ```
 
 ## 📚 API Documentation
